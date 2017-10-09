@@ -3,11 +3,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var transactionModelSchema = new Schema({
-  transactionToken : String,
+  token : String,
   merchant : String,
   customer : String,
   amount : String,
-  timestamp : Number,
+  creationTimeStamp : Number,
+  expireTimeStamp : Number,
   status : String,
   isPaid : Boolean,
 });
