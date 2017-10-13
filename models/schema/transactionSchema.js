@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 var transactionModelSchema = new Schema({
   token : String,
   merchant : String,
-  customer : String,
+  merchantName : String,
+  mobile : String,
   amount : String,
   creationTimeStamp : Number,
   expireTimeStamp : Number,
