@@ -40,8 +40,8 @@ router.get('/fetch', function(req, res, next) {
 			console.log(err);
 		}else{
 			if(!foundObject){
-				reponseObj.success = false;
-				res.send(reponseObj);
+				responseObj.success = false;
+				res.send(responseObj);
 			}else{
 				responseObj.success = true;
 				responseObj.token = foundObject.token;
