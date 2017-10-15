@@ -1,6 +1,9 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var transactionModel = require('../models/schema/transactionSchema');
+var userModel = require('../models/schema/userSchema');
+
+const mailjet = require('node-mailjet').connect('5691bc2fd11fd19cf546d1a237df3f19','d89c20139c1382b9f1fc3a5eeda37cab');
 
 var router = express.Router();
 
@@ -15,6 +18,75 @@ function generateTransactionToken() {
 	}
 
 	return token;
+}
+
+function updateRewards(mobile,amount) {
+	userModel.findOne({"mobile":mobile},function (err,foundObject) {
+					if(err){
+						console.log(err);
+					}else{
+						foundObject.rewards += (amount*0.01);
+						foundObject.debit += amount;
+						foundObject.save(function (err,savedObject) {
+							if(err){
+								console.log(err);
+							}else{
+								console.log('rewards successfully updated');
+							}
+						})
+					}
+	})
+
+
+	const request = mailjet.post("send", {'version': 'v3.1'}).request({
+        "Messages":[
+                {
+                        "From": {
+                                "Email": "pravchand123@hotmail.com",
+                                "Name": "Pravandan Chand"
+                        },
+                        "To": [
+                                {
+                                        "Email": "pravandan.chand@gmail.com",
+                                        "Name": "Pravandan"
+                                }
+                        ],
+                        "Subject": "Your email flight plan!",
+                        "TextPart": "Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
+                        "HTMLPart": "<h3>Dear passenger 1, welcome to Mailjet!</h3><br />May the delivery force be with you!"
+                }
+        ]
+    })
+request
+    .then((result) => {
+    	console.log('sent');
+        console.log(result.body)
+    })
+    .catch((err) => {
+    	console.log('error');
+        console.log(err)
+    })
+
+}
+
+function updateMerchant(mobile,amount) {
+	userModel.findOne({"mobile":mobile},function (err,foundObject) {
+					if(err){
+						console.log(err);
+					}else{
+						if(foundObject){
+						foundObject.credit += amount;
+						
+						foundObject.save(function (err,savedObject) {
+							if(err){
+								console.log(err);
+							}else{
+								console.log('credit successfully updated');
+							}
+						})
+					  }
+					}
+	})
 }
 
 
@@ -97,11 +169,12 @@ router.get('/initiate', function(req, res, next) {
 	let amount = req.query.amount;
 	let mobile = req.query.mobile;	
 	let creationTimeStamp = (new Date).getTime();
-
+	let merchantMobile = req.query.merchantMobile;
 
 	let responseObj = new transactionModel({
 			"token" : token,
 			"merchant" : merchant,
+			"merchantMobile" : merchantMobile,
 			"merchantName" : "Big Bazaar Pvt Ltd.",
 			"amount" : amount,
 			"mobile" : mobile,
@@ -109,6 +182,7 @@ router.get('/initiate', function(req, res, next) {
 			"expireTimeStamp" : creationTimeStamp + 60*1000, 
 			"status" : 'Initiated',
 			"isPaid" : false,
+			"isCancel" : false,
 		});
 
 
@@ -139,6 +213,8 @@ router.get('/complete', function(req, res, next) {
 		"amount" : 0,
 		"status" : '',
 		"isPaid" : false,
+		"mobile" : '',
+		"merchantMobile" : '',
 	}
 
 	transactionModel.findOne({"token":token},function (err,foundObject) {
@@ -154,9 +230,14 @@ router.get('/complete', function(req, res, next) {
 				responseObj.amount = foundObject.amount;
 				responseObj.status = 'Transaction Succesfull';
 				responseObj.isPaid = true;
+				responseObj.mobile = foundObject.mobile;
+				responseObj.merchantMobile = foundObject.merchantMobile;
 
 				foundObject.status = responseObj.status;
 				foundObject.isPaid = responseObj.isPaid;
+
+				updateRewards(responseObj.mobile,foundObject.amount);
+				updateMerchant(responseObj.merchantMobile,foundObject.amount);
 
 				foundObject.save(function (err,savedObject) {
 					if(err){
@@ -173,6 +254,100 @@ router.get('/complete', function(req, res, next) {
   //res.status(200).send('pay a user,send your private key along with the received purchaseToken,amount,public key of merchant');
 });
 
+router.get('/cancel',function (req,res) {
+	let token = req.query.token;
+
+	let responseObj={
+		"success" : false,
+		"token" : token,
+		"merchantName" : '',
+		"amount" : 0,
+		"status" : '',
+		"isPaid" : false,
+	}
+
+	transactionModel.findOne({"token":token},function (err,foundObject) {
+		if(err){
+			console.log(err);
+		}else{
+			if(!foundObject){
+				responseObj.success = false;
+				res.send(responseObj);
+			}else{
+				responseObj.success = true;
+				responseObj.merchantName = foundObject.merchantName;
+				responseObj.amount = foundObject.amount;
+				responseObj.status = 'Transaction Cancelled';
+				responseObj.isPaid = false;
+				responseObj.isCancel = true;
+				foundObject.status = responseObj.status;
+				foundObject.isPaid = responseObj.isPaid;
+				foundObject.isCancel = foundObject.isCancel;
+
+				foundObject.save(function (err,savedObject) {
+					if(err){
+						console.log(err);
+					}else{
+						console.log('transaction cancel instance saved');
+					}
+				})
+
+				res.send(responseObj);
+			}
+		}
+	})
+
+})
+
+router.get('/allCredit',function(req,res){
+	let mobile  = req.query.mobile;
+
+	let responseObj = {
+		"success" : false,
+		"creditObjects" : '',
+	}
+
+	transactionModel.find({"merchantMobile":mobile,"isPaid":true},function (err,foundObject) {
+		if(err){
+			console.log(err);
+		}else{
+			if(!foundObject){
+				responseObj.success = false;
+				res.send(responseObj);
+			}else{
+				responseObj.success = true;
+				responseObj.creditObjects = foundObject;
+				console.log(responseObj);
+				res.send(responseObj);
+			}
+		}
+	})
+})
+
+router.get('/allDebit',function(req,res){
+	let mobile  = req.query.mobile;
+
+	let responseObj = {
+		"success" : false,
+		"creditObjects" : '',
+	}
+
+	transactionModel.find({"mobile":mobile,"isPaid":true},function (err,foundObject) {
+		if(err){
+			console.log(err);
+		}else{
+			if(!foundObject){
+				responseObj.success = false;
+				res.send(responseObj);
+			}else{
+				responseObj.success = true;
+				responseObj.creditObjects = foundObject;
+				console.log(responseObj);
+				res.send(responseObj);
+			}
+		}
+	})
+})
 
 
 module.exports = router;

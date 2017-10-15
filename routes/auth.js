@@ -32,6 +32,9 @@ router.get('/register', function(req, res, next) {
   	'userID' : '',
   	'name' : name,
   	'mobile' : mobile,
+  	'credit' : 0,
+  	'debit' : 0,
+  	'rewards' : 0,
   }
 
 
@@ -45,6 +48,9 @@ router.get('/register', function(req, res, next) {
 											  	'userID' : generateUserID(),
 											  	'name' : name,
 											  	'mobile' : mobile,
+											  	'credit' : 0,
+											  	'debit' : 0,
+											  	'rewards' : 0,
   											});
 
   				responseObj.userID = newUser.userID;
@@ -80,7 +86,23 @@ router.get('/login', function(req, res, next) {
   	"mobile" : mobile,
   }
 
-  res.send(responseObj);
+  userModel.findOne({"mobile":mobile},function (err,foundObject) {
+  	if(err){
+  		console.log(err);
+  		res.send(responseObj);
+  	}else{
+  		if(!foundObject){
+  			res.send(responseObj);
+  		}
+
+  		else{
+  			//console.log('user already exists');
+  			
+  			res.send(foundObject);
+  		}
+  	}
+  })
+
 
   //res.status(200).send('login a user,check also if already in session then return the message as already in session');
 });

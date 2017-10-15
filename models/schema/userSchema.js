@@ -8,6 +8,9 @@ var userModelSchema = new Schema({
   mobile : String,
   publicKey : String,
   privateKey : String,
+  credit : Number,
+  debit : Number,
+  rewards : Number,
   inSession : Boolean,
 });
 
