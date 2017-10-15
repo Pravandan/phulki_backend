@@ -11,6 +11,7 @@
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "hbs": "~4.0.1",
+    "instamojo-nodejs": "0.0.5",
     "mongodb": "^2.2.32",
     "mongodb-server": "^1.0.0",
     "mongoose": "^4.12.1",
