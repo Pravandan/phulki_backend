@@ -215,7 +215,7 @@ router.get('/initiate', function(req, res, next) {
 
 		  } else {
 		    // Payment redirection link at response.payment_request.longurl
-		    responseObj.longUrl = response.payment_request.longurl;
+		    responseObj.longUrl = response.payment_request;
 		    responseObj.save(function (err,savedObject) {
 					if(err){
 						console.log(err);
