@@ -200,23 +200,36 @@ router.get('/initiate', function(req, res, next) {
 		Insta.createPayment(data, function(error, response) {
 		  if (error) {
 		    // some error
+
+		    responseObj.save(function (err,savedObject) {
+				if(err){
+					console.log(err);
+				}else{
+					console.log('transaction instance saved');
+				}
+			})
+
+  			res.status(200).send(responseObj);
+
 		    console.log(error);
+
 		  } else {
 		    // Payment redirection link at response.payment_request.longurl
 		    responseObj.longUrl = response;
+		    responseObj.save(function (err,savedObject) {
+					if(err){
+						console.log(err);
+					}else{
+						console.log('transaction instance saved');
+					}
+				})
+
+  			res.status(200).send(responseObj);
 		    console.log(response);
   		}
 	});
 
-	responseObj.save(function (err,savedObject) {
-		if(err){
-			console.log(err);
-		}else{
-			console.log('transaction instance saved');
-		}
-	})
-
-  	res.status(200).send(responseObj);
+	
 });
 
 
