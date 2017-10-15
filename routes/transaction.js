@@ -225,7 +225,7 @@ router.get('/generatePayURL',function (req,res) {
 		    console.log(error);
 		  } else {
 		    // Payment redirection link at response.payment_request.longurl
-		    res.send(responseObj);
+		    res.send(response);
 		    console.log(response);
   		}
 	});
