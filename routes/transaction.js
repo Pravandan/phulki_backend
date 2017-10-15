@@ -191,46 +191,45 @@ router.get('/initiate', function(req, res, next) {
 		});
 
 
+	
+
+
+	responseObj.save(function (err,savedObject) {
+		if(err){
+			console.log(err);
+		}else{
+			console.log('transaction instance saved');
+		}
+	})
+
+  	res.status(200).send(responseObj);
+});
+
+
+router.get('/generatePayURL',function (req,res) {
+	let amount = req.query.amount;
+
+
 	var data = new Insta.PaymentData();
 
 		data.purpose = "Test";            // REQUIRED
 		data.amount = amount;                  // REQUIRED
 		data.setRedirectUrl('http://pravandan.in/transaction');
 
+
+
 		Insta.createPayment(data, function(error, response) {
 		  if (error) {
 		    // some error
-
-		    responseObj.save(function (err,savedObject) {
-				if(err){
-					console.log(err);
-				}else{
-					console.log('transaction instance saved');
-				}
-			})
-
-  			res.status(200).send(responseObj);
-
+		    res.send({"success":false})
 		    console.log(error);
-
 		  } else {
 		    // Payment redirection link at response.payment_request.longurl
-		    responseObj.longUrl = response.payment_request;
-		    responseObj.save(function (err,savedObject) {
-					if(err){
-						console.log(err);
-					}else{
-						console.log('transaction instance saved');
-					}
-				})
-
-  			res.status(200).send(responseObj);
-		    console.log(JSON.parse(response.payment_request));
+		    res.send(responseObj);
+		    console.log(response);
   		}
 	});
-
-	
-});
+})
 
 
 router.get('/all', function(req, res, next) {
