@@ -13,7 +13,8 @@ var transactionModelSchema = new Schema({
   expireTimeStamp : Number,
   status : String,
   isPaid : Boolean,
-  isCancel : Boolean
+  isCancel : Boolean,
+  longUrl : String,
 });
 
 module.exports = mongoose.model('transactionModel',transactionModelSchema);

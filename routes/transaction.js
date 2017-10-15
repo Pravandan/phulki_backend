@@ -1,11 +1,15 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var Insta = require('instamojo-nodejs');
 var transactionModel = require('../models/schema/transactionSchema');
 var userModel = require('../models/schema/userSchema');
 
 const mailjet = require('node-mailjet').connect('5691bc2fd11fd19cf546d1a237df3f19','d89c20139c1382b9f1fc3a5eeda37cab');
 
 var router = express.Router();
+
+Insta.setKeys('be8db513eb1c15fd2252bf36f303d35b', 'cc7ada62651c5d4cf2b89b96fcc69f3f');
+Insta.isSandboxMode(true);
 
 mongoose.connect('mongodb://localhost/test');
 
@@ -183,8 +187,26 @@ router.get('/initiate', function(req, res, next) {
 			"status" : 'Initiated',
 			"isPaid" : false,
 			"isCancel" : false,
+			"longUrl" : '',
 		});
 
+
+	var data = new Insta.PaymentData();
+
+		data.purpose = "Test";            // REQUIRED
+		data.amount = amount;                  // REQUIRED
+		data.setRedirectUrl('http://pravandan.in/transaction');
+
+		Insta.createPayment(data, function(error, response) {
+		  if (error) {
+		    // some error
+		    console.log(error);
+		  } else {
+		    // Payment redirection link at response.payment_request.longurl
+		    responseObj.longUrl = response.payment_request.longurl;
+		    console.log(response);
+  		}
+	});
 
 	responseObj.save(function (err,savedObject) {
 		if(err){
