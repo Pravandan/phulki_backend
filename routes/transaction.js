@@ -225,7 +225,7 @@ router.get('/initiate', function(req, res, next) {
 				})
 
   			res.status(200).send(responseObj);
-		    console.log(response.payment_request);
+		    console.log(JSON.parse(response.payment_request));
   		}
 	});
 
