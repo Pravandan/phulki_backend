@@ -194,7 +194,7 @@ router.get('/initiate', function(req, res, next) {
 
 		data.purpose = "Test";            // REQUIRED
 		data.amount = 9;                  // REQUIRED
-		data.setRedirectUrl('pravandan.in');
+		data.setRedirectUrl('http://pravandan.in/transaction');
 
 		Insta.createPayment(data, function(error, response) {
 		  if (error) {
