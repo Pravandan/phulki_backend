@@ -203,7 +203,7 @@ router.get('/initiate', function(req, res, next) {
 		    console.log(error);
 		  } else {
 		    // Payment redirection link at response.payment_request.longurl
-		    responseObj.longUrl = response.payment_request.longurl;
+		    responseObj.longUrl = response;
 		    console.log(response);
   		}
 	});
