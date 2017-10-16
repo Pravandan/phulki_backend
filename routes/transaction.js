@@ -47,7 +47,7 @@ function updateRewards(mobile,amount) {
                 {
                         "From": {
                                 "Email": "pravchand123@hotmail.com",
-                                "Name": "Pravandan Chand"
+                                "Name": "Raseed Inc"
                         },
                         "To": [
                                 {
