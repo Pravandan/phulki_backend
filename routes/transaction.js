@@ -58,8 +58,6 @@ function updateRewards(mobile,amount) {
 			"TemplateID": 232114,
                         "TemplateLanguage": true,
                         "Subject": "Transaction Successfull!",
-                        "TextPart": "Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
-                        "HTMLPart": "<h3>Dear passenger 1, welcome to Mailjet!</h3><br />May the delivery force be with you!"
                 }
         ]
     })
