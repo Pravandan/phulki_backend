@@ -144,6 +144,8 @@ router.get('/status', function(req, res, next) {
 		"amount" : 0,
 		"status" : '',
 		"isPaid" : false,
+		"merchantMobile" : '',
+		"mobile" : '',
 	}
 
 	transactionModel.findOne({"token":token},function (err,foundObject) {
@@ -159,6 +161,8 @@ router.get('/status', function(req, res, next) {
 				responseObj.amount = foundObject.amount;
 				responseObj.status = foundObject.status;
 				responseObj.isPaid = foundObject.isPaid;
+				responseObj.merchantMobile = foundObject.merchantMobile;
+				responseObj.mobile = foundObject.mobile;
 				res.send(responseObj);
 			}
 		}
@@ -174,12 +178,13 @@ router.get('/initiate', function(req, res, next) {
 	let mobile = req.query.mobile;	
 	let creationTimeStamp = (new Date).getTime();
 	let merchantMobile = req.query.merchantMobile;
+	let merchantName = req.query.merchantName;
 
 	let responseObj = new transactionModel({
 			"token" : token,
 			"merchant" : merchant,
 			"merchantMobile" : merchantMobile,
-			"merchantName" : "Big Bazaar Pvt Ltd.",
+			"merchantName" : merchantName,
 			"amount" : amount,
 			"mobile" : mobile,
 			"creationTimeStamp" : creationTimeStamp,
@@ -383,5 +388,31 @@ router.get('/allDebit',function(req,res){
 	})
 })
 
+
+router.get('/allTransactions',function (req,res) {
+	let mobile = req.query.mobile;
+
+	let responseObj = {
+		"success" : false,
+		"transObj" : '',
+	}
+
+	transactionModel.find({ $or:[ {'mobile':mobile}, {'merchantMobile':mobile}]},function (err,foundObject) {
+		if(err){
+			console.log(err);
+		}else{
+			if(!foundObject){
+				responseObj.success = false;
+				res.send(responseObj);
+			}else{
+				responseObj.success = true;
+				responseObj.creditObjects = foundObject;
+				console.log(responseObj);
+				res.send(responseObj);
+			}
+		}
+	})
+
+})
 
 module.exports = router;
