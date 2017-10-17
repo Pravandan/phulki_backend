@@ -406,7 +406,7 @@ router.get('/allTransactions',function (req,res) {
 				res.send(responseObj);
 			}else{
 				responseObj.success = true;
-				responseObj.creditObjects = foundObject;
+				responseObj.transObj = foundObject;
 				console.log(responseObj);
 				res.send(responseObj);
 			}
