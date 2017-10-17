@@ -47,7 +47,7 @@ function updateRewards(mobile,amount) {
                 {
                         "From": {
                                 "Email": "pravchand123@hotmail.com",
-                                "Name": "Pravandan Chand"
+                                "Name": "Raseed Inc"
                         },
                         "To": [
                                 {
@@ -55,9 +55,9 @@ function updateRewards(mobile,amount) {
                                         "Name": "Pravandan"
                                 }
                         ],
-                        "Subject": "Your email flight plan!",
-                        "TextPart": "Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
-                        "HTMLPart": "<h3>Dear passenger 1, welcome to Mailjet!</h3><br />May the delivery force be with you!"
+			"TemplateID": 232114,
+                        "TemplateLanguage": true,
+                        "Subject": "Transaction Successfull!",
                 }
         ]
     })
