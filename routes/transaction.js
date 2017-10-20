@@ -51,8 +51,8 @@ function updateRewards(mobile,amount) {
                         },
                         "To": [
                                 {
-                                        "Email": "pravandan.chand@gmail.com",
-                                        "Name": "Pravandan"
+                                        "Email": "raseedinc@gmail.com",
+                                        "Name": "CodeFunDo"
                                 }
                         ],
 			"TemplateID": 232114,
