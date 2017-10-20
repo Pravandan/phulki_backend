@@ -30,7 +30,7 @@ function updateRewards(mobile,amount) {
 						console.log(err);
 					}else{
 						foundObject.rewards += (amount*0.01);
-						foundObject.debit += amount;
+						foundObject.debit += Number(amount);
 						foundObject.save(function (err,savedObject) {
 							if(err){
 								console.log(err);
