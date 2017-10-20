@@ -397,7 +397,7 @@ router.get('/allTransactions',function (req,res) {
 		"transObj" : '',
 	}
 
-	transactionModel.find({ $or:[ {'mobile':mobile}, {'merchantMobile':mobile}]},function (err,foundObject) {
+	transactionModel.find({ $or:[ {'mobile':mobile,'isPaid':true}, {'merchantMobile':mobile,'isPaid':true}]},function (err,foundObject) {
 		if(err){
 			console.log(err);
 		}else{
