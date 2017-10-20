@@ -79,7 +79,7 @@ function updateMerchant(mobile,amount) {
 						console.log(err);
 					}else{
 						if(foundObject){
-						foundObject.credit += amount;
+						foundObject.credit += Number(amount);
 						
 						foundObject.save(function (err,savedObject) {
 							if(err){
